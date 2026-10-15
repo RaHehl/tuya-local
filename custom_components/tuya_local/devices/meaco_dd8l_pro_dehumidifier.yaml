@@ -138,9 +138,11 @@ entities:
   - entity: binary_sensor
     translation_key: tank_full
     dps:
+      # fault bitmap: FULL, CLEAN_FILTER, CONNECT_CABLE_TIDY, OK, COOLING_DOWN
       - id: 19
         name: sensor
         type: bitfield
+        mask: "01"
         mapping:
           # Captured when tank was full
           - dps_val: 1
@@ -153,15 +155,39 @@ entities:
       - id: 19
         type: bitfield
         name: sensor
+        mask: "06"
         mapping:
           - dps_val: 0
-            value: false
-          - dps_val: 1
             value: false
           - value: true
       - id: 19
         type: bitfield
         name: fault_code
+  - entity: binary_sensor
+    name: Cooling down
+    class: running
+    category: diagnostic
+    dps:
+      - id: 19
+        type: bitfield
+        name: sensor
+        mask: "10"
+        mapping:
+          - dps_val: 1
+            value: true
+          - value: false
+  - entity: sensor
+    name: Cooldown remaining
+    class: duration
+    category: diagnostic
+    dps:
+      - id: 18
+        type: integer
+        name: sensor
+        unit: min
+        range:
+          min: 0
+          max: 15
   - entity: lock
     translation_key: child_lock
     category: config
